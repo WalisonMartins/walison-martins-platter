@@ -4,7 +4,31 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
+		<link rel="stylesheet" href="https://use.typekit.net/vug6wdl.css" />
 		<script src="https://cdn.tailwindcss.com"></script>
+		<style>
+			@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+		</style>
+		<style>
+			@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+		</style>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						fontFamily: {
+							poppins: ["Poppins", "sans-serif"],
+							bebas: ["Bebas Neue", "sans-serif"],
+							pro: ["source-serif-pro", "serif"],
+						},
+						colors: {
+							"custom-gray": "#1C1D1D",
+							"custom-light-gray": "#707070",
+						},
+					},
+				},
+			};
+		</script>
 	</head>
 	<body></body>
 </html>
