@@ -883,5 +883,128 @@
 				</div>
 			</div>
 		</section>
+
+		<script>
+			const scrollContainer = document.getElementById("productScroll");
+			const scrollBar = document.getElementById("scrollBar");
+			const scrollThumb = document.getElementById("scrollThumb");
+			const showMoreBtn = document.getElementById("showMoreBtn");
+
+			let isDraggingCards = false;
+			let isDraggingThumb = false;
+			let startX;
+			let scrollLeft;
+
+			// Function to update the scroll based on the position of the inner scrollbar
+			const updateScroll = scrollLeft => {
+				scrollContainer.scrollLeft = scrollLeft;
+			};
+
+			// Function to update the position of the inner scrollbar based on the scroll
+			const updateThumbPosition = () => {
+				const scrollLeft = scrollContainer.scrollLeft;
+				const scrollWidth =
+					scrollContainer.scrollWidth - scrollContainer.clientWidth;
+				const thumbWidth = scrollThumb.offsetWidth;
+				const barWidth = scrollBar.offsetWidth;
+
+				const thumbPosition =
+					(scrollLeft / scrollWidth) * (barWidth - thumbWidth);
+				scrollThumb.style.left = `${thumbPosition}px`;
+			};
+
+			// ===== Dragging Cards =====
+			const startDragCards = e => {
+				if (e.button !== 0) return;
+				e.preventDefault();
+				isDraggingCards = true;
+				startX = e.pageX - scrollContainer.offsetLeft;
+				scrollLeft = scrollContainer.scrollLeft;
+				scrollContainer.style.cursor = "grabbing";
+			};
+
+			const dragCards = e => {
+				if (!isDraggingCards) return;
+				e.preventDefault(); // Prevents the default behavior of the link
+
+				const x = e.pageX - scrollContainer.offsetLeft;
+				const walk = x - startX; // Removes the smoothing adjustment
+				scrollContainer.scrollLeft = scrollLeft - walk;
+
+				updateThumbPosition(); // Updates the scrollbar position while dragging the cards
+			};
+
+			const stopDragCards = () => {
+				isDraggingCards = false;
+				scrollContainer.style.cursor = "grab";
+			};
+
+			// Drag events for the cards
+			scrollContainer.addEventListener("mousedown", startDragCards);
+			scrollContainer.addEventListener("mousemove", dragCards);
+			document.addEventListener("mouseup", stopDragCards);
+			scrollContainer.addEventListener("mouseleave", stopDragCards);
+
+			// ===== Dragging the Inner Scrollbar =====
+			scrollThumb.addEventListener("mousedown", e => {
+				isDraggingThumb = true;
+				startX = e.clientX - scrollThumb.offsetLeft;
+				document.addEventListener("mousemove", onThumbDrag);
+				document.addEventListener("mouseup", onThumbRelease);
+			});
+
+			const onThumbDrag = e => {
+				if (!isDraggingThumb) return;
+
+				const barWidth = scrollBar.offsetWidth;
+				const thumbWidth = scrollThumb.offsetWidth;
+				let newLeft = e.clientX - startX;
+
+				// Restrict the position of the inner scrollbar within the outer scrollbar
+				newLeft = Math.max(0, Math.min(newLeft, barWidth - thumbWidth));
+
+				// Update the position of the inner scrollbar
+				scrollThumb.style.left = `${newLeft}px`;
+
+				// Updates the scroll position of the container
+				const scrollWidth =
+					scrollContainer.scrollWidth - scrollContainer.clientWidth;
+				const scrollLeft = (newLeft / (barWidth - thumbWidth)) * scrollWidth;
+				updateScroll(scrollLeft);
+			};
+
+			const onThumbRelease = () => {
+				isDraggingThumb = false;
+				document.removeEventListener("mousemove", onThumbDrag);
+				document.removeEventListener("mouseup", onThumbRelease);
+			};
+
+			// ===== Click on the Outer Scrollbar =====
+			scrollBar.addEventListener("click", e => {
+				const barWidth = scrollBar.offsetWidth;
+				const thumbWidth = scrollThumb.offsetWidth;
+				const clickX = e.clientX - scrollBar.getBoundingClientRect().left;
+
+				// Calculates the new position of the inner scrollbar
+				const newLeft = Math.max(
+					0,
+					Math.min(clickX - thumbWidth / 2, barWidth - thumbWidth),
+				);
+
+				// Updates the position of the inner scrollbar
+				scrollThumb.style.left = `${newLeft}px`;
+
+				// Updates the scroll position of the container
+				const scrollWidth =
+					scrollContainer.scrollWidth - scrollContainer.clientWidth;
+				const scrollLeft = (newLeft / (barWidth - thumbWidth)) * scrollWidth;
+				updateScroll(scrollLeft);
+			});
+
+			// ===== Synchronizing Scroll with the Inner Bar =====
+			scrollContainer.addEventListener("scroll", () => {
+				updateThumbPosition();
+			});
+		</script>
 	</body>
 </html>
