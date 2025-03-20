@@ -29,6 +29,48 @@
 				},
 			};
 		</script>
+		<style>
+			#productScroll {
+				scrollbar-width: none;
+				-ms-overflow-style: none;
+			}
+			#productScroll::-webkit-scrollbar {
+				display: none;
+			}
+
+			#scrollBar {
+				position: relative;
+				overflow: hidden;
+			}
+
+			#scrollThumb {
+				width: 33.33%;
+				cursor: grab;
+				transition: transform 0.2s ease;
+			}
+
+			#scrollThumb:active {
+				cursor: grabbing;
+				transform: scaleY(1.2);
+			}
+
+			@media (max-width: 639px) {
+				.mobile-hidden {
+					display: none;
+					opacity: 0;
+					visibility: hidden;
+					transform: translateY(20px);
+					transition: opacity 0.5s ease, transform 0.5s ease,
+						visibility 0.5s ease;
+				}
+
+				.mobile-hidden.show {
+					opacity: 1;
+					visibility: visible;
+					transform: translateY(0);
+				}
+			}
+		</style>
 	</head>
 	<body>
 		<section class="w-full">
@@ -928,7 +970,7 @@
 				e.preventDefault(); // Prevents the default behavior of the link
 
 				const x = e.pageX - scrollContainer.offsetLeft;
-				const walk = x - startX; // Removes the smoothing adjustment
+				const walk = (x - startX) * 2;
 				scrollContainer.scrollLeft = scrollLeft - walk;
 
 				updateThumbPosition(); // Updates the scrollbar position while dragging the cards
