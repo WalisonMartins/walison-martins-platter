@@ -1005,6 +1005,38 @@
 			scrollContainer.addEventListener("scroll", () => {
 				updateThumbPosition();
 			});
+
+			showMoreBtn.addEventListener("click", () => {
+				// Select all hidden cards
+				const hiddenCards = document.querySelectorAll(".mobile-hidden");
+
+				// Remove the mobile-hidden class and add the show class
+				hiddenCards.forEach(card => {
+					card.style.display = "block"; // Changes the display to block (or another appropriate value)
+					setTimeout(() => {
+						card.classList.add("show"); // Adds the "show" class to trigger the transition
+					}, 10); // Small delay to ensure the browser processes the display change
+				});
+
+				// Hide the button after the click
+				showMoreBtn.style.display = "none";
+			});
+
+			// Adds functionality to swap images on hover
+			document.querySelectorAll(".relative").forEach(card => {
+				const primaryImage = card.querySelector(".primary-image");
+				const secondaryImage = card.querySelector(".secondary-image");
+
+				card.addEventListener("mouseenter", () => {
+					primaryImage.classList.add("hidden");
+					secondaryImage.classList.remove("hidden");
+				});
+
+				card.addEventListener("mouseleave", () => {
+					secondaryImage.classList.add("hidden");
+					primaryImage.classList.remove("hidden");
+				});
+			});
 		</script>
 	</body>
 </html>
